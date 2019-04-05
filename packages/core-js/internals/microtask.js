@@ -37,6 +37,11 @@ if (!queueMicrotask) {
     notify = function () {
       process.nextTick(flush);
     };
+    // when MutationObserver is added from customer's javascript on ie 9-10
+  } else if (MutationObserver && /MSIE (9|10).0/i.test(userAgent)) {
+    notify = function () {
+      macrotask.call(global, flush);
+    };
   // browsers with MutationObserver, except iOS - https://github.com/zloirock/core-js/issues/339
   } else if (MutationObserver && !/(iPhone|iPod|iPad).*AppleWebKit/i.test(userAgent)) {
     toggle = true;
